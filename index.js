@@ -55,9 +55,12 @@ app.post('/generate-aes-key', (req, res) => {
     JSON.parse(req.body.base)
   )
 
-  console.info("AES Key: ", aesKey)
 
-  return res.send(aesKey)
+  const aesKeyJSON = aesKey.toJSON()
+
+  console.info("AES Key: ", aesKeyJSON)
+
+  return res.send(aesKeyJSON)
 })
 
 app.listen(port, () => {
