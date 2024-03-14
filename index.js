@@ -1,35 +1,15 @@
-import crypto from 'node:crypto'
 import express  from 'express'
 import bodyParser from 'body-parser'
+
+import { generateAesKey } from './generateAesKey.js'
+import { formatResponses } from './formatResponses.js'
 
 const app = express()
 const port = 3001
 
 app.use(bodyParser({ json: true }))
 
-/**
- * @module index
- * @description Function to generate Aes key
- * @requires crypto
- * @param {number[]} appletPrivateKey
- * @param {number[]} userPublicKey
- * @param {number[]} appletPrime
- * @param {number[]} base
- * @returns {Buffer} The AES key
- */
-
-function generateAesKey(appletPrivateKey, userPublicKey, appletPrime, base) {
-  const key = crypto.createDiffieHellman(Buffer.from(appletPrime), Buffer.from(base))
-
-  key.setPrivateKey(Buffer.from(appletPrivateKey))
-
-  const secretKey = key.computeSecret(Buffer.from(userPublicKey))
-
-  return crypto.createHash('sha256').update(secretKey).digest()
-}
-
 app.post('/generate-aes-key', (req, res) => {
-
   console.info(req.body)
 
   if(!req.body?.appletPrivateKey) {
@@ -55,12 +35,43 @@ app.post('/generate-aes-key', (req, res) => {
     JSON.parse(req.body.base)
   )
 
-
   const aesKeyJSON = aesKey.toJSON()
 
   console.info("AES Key: ", aesKeyJSON)
 
   return res.send(aesKeyJSON)
+})
+
+app.post('/format-responses', (req, res) => {
+  console.info(req.body)
+
+  if(!req.body?.payload) {
+    return res.status(400).send('payload is required')
+  }
+
+  if(!Array.isArray(req.body.payload)) {
+    return res.status(400).send('payload should be an array')
+  }
+
+  const formattedResponses = req.body.payload.map(item => {
+    if(!item.type) {
+      throw new Error(`type is required for item: ${JSON.stringify(item)}`)
+    }
+
+    if(!item.responseValues) {
+      throw new Error(`responseValues is required for item: ${JSON.stringify(item)}`)
+    }
+
+    const formattedResponse = formatResponses(item.type, item.responseValues)
+
+    return formattedResponse
+  })
+
+  console.info("Formatted Responses: ", formattedResponses)
+
+  res.json({
+    result: formattedResponses
+  })
 })
 
 app.listen(port, () => {

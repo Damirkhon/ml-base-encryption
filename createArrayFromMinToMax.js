@@ -1,0 +1,1 @@
+export const createArrayFromMinToMax = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => i + min)
