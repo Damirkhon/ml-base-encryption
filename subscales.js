@@ -1,5 +1,5 @@
 import { getObjectFromList } from './getObjectFromList.js'
-import { createArrayFromMinToMax } from './createArrayFromMinToMax'
+import { createArrayFromMinToMax } from './createArrayFromMinToMax.js'
 import { LookupTableItems, FinalSubscale, ItemResponseType, ElementType, SubscaleTotalScore, Sex } from './constants.js'
 
 export const parseSex = (sex) => (sex === Sex.M ? '0' : '1');
