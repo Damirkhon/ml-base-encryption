@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 
 import { generateAesKey } from './generateAesKey.js'
 import { formatResponses } from './formatResponses.js'
+import { getSubscales } from './subscales.js'
 
 const app = express()
 const port = 3001
@@ -71,6 +72,28 @@ app.post('/format-responses', (req, res) => {
 
   res.json({
     result: formattedResponses
+  })
+})
+
+app.post('/calculate-subscales', (req, res) => {
+  console.info(req.body)
+
+  if(!req.body?.payload) {
+    return res.status(400).send('payload is required')
+  }
+
+  if(!req.body.subscaleSetting) {
+    return res.status(400).send('subscaleSetting is required')
+  }
+
+  if(!req.body.activityItems) {
+    return res.status(400).send('activityItems is required')
+  }
+
+  const subscale = getSubscales(req.body.subscaleSetting, req.body.activityItems)
+
+  res.json({
+    result: subscale
   })
 })
 
