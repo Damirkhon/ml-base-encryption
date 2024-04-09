@@ -5,6 +5,8 @@ import { generateAesKey } from './generateAesKey.js'
 import { formatResponses } from './formatResponses.js'
 import { getSubscales } from './subscales.js'
 
+import { activityItems, filledSubscaleScores, subscaleSettings } from './mock.js'
+
 const app = express()
 const port = 3001
 
@@ -76,12 +78,6 @@ app.post('/format-responses', (req, res) => {
 })
 
 app.post('/calculate-subscales', (req, res) => {
-  console.info(req.body)
-
-  if(!req.body?.payload) {
-    return res.status(400).send('payload is required')
-  }
-
   if(!req.body.subscaleSetting) {
     return res.status(400).send('subscaleSetting is required')
   }
@@ -94,6 +90,15 @@ app.post('/calculate-subscales', (req, res) => {
 
   res.json({
     result: subscale
+  })
+})
+
+app.get('/get-test-data-for-subscales', (req, res) => {
+
+  res.json({
+    subscaleSetting: subscaleSettings,
+    activityItems: activityItems,
+    expectedResult: filledSubscaleScores
   })
 })
 
