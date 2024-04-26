@@ -154,7 +154,7 @@ export const calcScores = (
 };
 
 export const getSubscales = (subscaleSetting, activityItems) => {
-  if (!subscaleSetting?.subscales?.length || !Object.keys(activityItems).length) return {}
+  if (!subscaleSetting?.subscales?.length && !Object.keys(activityItems).length) return {}
 
   const subscalesObject = getObjectFromList(
     subscaleSetting.subscales,

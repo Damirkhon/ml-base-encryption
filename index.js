@@ -10,7 +10,8 @@ import { activityItems, filledSubscaleScores, subscaleSettings } from './mock.js
 const app = express()
 const port = 3001
 
-app.use(bodyParser({ json: true }))
+app.use(bodyParser({ json: true, limit:'200mb' }))
+
 
 app.post('/generate-aes-key', (req, res) => {
   console.info(req.body)
